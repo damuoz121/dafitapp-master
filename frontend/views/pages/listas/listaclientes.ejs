@@ -139,7 +139,9 @@
 <script>
 
   // inicializo la tabla con la libreria datatable con los registros
-  $('#tabla-clientes').DataTable({pageLength : 7});
+  $('#tabla-clientes').DataTable({pageLength : 7,language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json',
+    }});
 
   const formulario = document.getElementById('formulario-cliente');
 

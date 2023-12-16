@@ -65,7 +65,12 @@
 
                 <div class="form-group mt-3">
                   <label for="dificultad">Dificultad</label>
-                  <input type="text" class="form-control"  id="dificultad" name="dificultad"/>
+                  <select type="text" class="form-select"  id="dificultad" name="dificultad">
+                    <option value="0">Selecciona una dificultad</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Media">Media</option>
+                    <option value="Baja">Baja</option>
+                  </select>
                   <div class="error-formulario error-dificultad">La dificultad es requerida</div>
                 </div>
 
@@ -115,7 +120,9 @@
 
 
 <script>
-  $('#tabla-planes').DataTable({pageLength : 7});
+  $('#tabla-planes').DataTable({pageLength : 7,language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json',
+    }});
 
   const formulario = document.getElementById('formulario-planes');
 
