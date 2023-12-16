@@ -34,7 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use('/api-doc', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)));
-app.use('/api/v1', routes);
+app.use('/', routes);
 
 
 app.set("view engine", "ejs");
