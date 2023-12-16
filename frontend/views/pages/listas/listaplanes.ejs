@@ -1,0 +1,313 @@
+<!----------------------------------------------------------------------->
+<title>Lista de planes</title>
+<%- include('../../partials/headdashboard'); %>
+<body>
+  <div class="container my-5 py-3 mx-auto px-4 md:px-6 lg:px-12">
+    <button class="btn btn-success me-2 mb-3" onclick="mostrarModalCrearPlan()">Registrar plan</button>
+    <section>  
+      <div class="card">
+        <div class="card-body">
+          <table class="table mb-0" id="tabla-planes">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Dificultad</th>
+                <th scope="col">objetivo</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaDatos">
+              <% listaplanes.forEach((plans) => { %>
+              <tr>
+                <th scope="row">
+                    <div>
+                      <p class="mb-1"><%= plans.nombre %></p>
+                    </div>
+                  </div>
+                </th>
+                <td><%= plans.dificultad %></td>
+                <td><%= plans.objetivo %></td>
+                <td>
+                  <button type="button" class="btn btn-primary me-2"  onclick="mostrarModalEditarPlan('<%= plans.id %>',this)">Editar</button>
+                  <!-- Botón para abrir ventana modal de eliminación -->
+                  <button type="button" class="btn btn-danger"  onclick="eliminarPlan('<%= plans.id %>',this)">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Ventana modal para registrar -->
+  <div class="modal fade" id="registrarModal" tabindex="-1" aria-labelledby="registrarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarModalLabel">Datos del plan</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="" id="formulario-planes" method="post"  class="needs-validation border rounded p-4" novalidate>
+            <div class="">
+              <div class="space-y-4">
+                <h5>Registro planes </h5>
+
+                <div class="form-group">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" class="form-control" id="nombre" name="nombre">
+                  <div class="error-formulario error-nombre">El nombre es requerido</div>
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="dificultad">Dificultad</label>
+                  <input type="text" class="form-control"  id="dificultad" name="dificultad"/>
+                  <div class="error-formulario error-dificultad">La dificultad es requerida</div>
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="objetivo">Objetivo</label>
+                  <input type="text" class="form-control" id="objetivo" name="objetivo"/>
+                  <div class="error-formulario error-objetivo">El objetivo es requerido</div>
+                </div>
+
+                <div class="form-group mt-3"> 
+                  <label for="frecuencia">Frecuencia</label>
+                  <input type="text" class="form-control" id="frecuencia" name="frecuencia"/>
+                  <div class="error-formulario error-frecuencia">La frecuencia es requerida</div>
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="ejercicios">Ejercicios</label>
+                  <select class="form-select" name="ejercicios" id="ejercicios" multiple style="height: 170px;">
+                    
+                    <% if(listaejercicios.length > 0){ %>
+                      <% listaejercicios.forEach(function(ejercicio) { %>
+                          <option value="<%=ejercicio.id%>"><%=ejercicio.nombre%></option>
+                      <% }); %>
+                    <% } else{ %>  
+                        
+                    <% } %>
+                  </select>
+                  <div class="error-formulario error-ejercicios">Los ejercicios son requeridos</div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="modal-footer p-0 m-0 mt-4">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary" id="boton-enviar">Guardar</button>
+            </div>
+
+          </form>
+
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+
+
+<script>
+  $('#tabla-planes').DataTable({pageLength : 7});
+
+  const formulario = document.getElementById('formulario-planes');
+
+  const tablaDatos = document.getElementById('tablaDatos');
+
+  let url = "";
+
+  function mostrarModalCrearPlan(){
+
+    $("#registrarModal").modal('show');
+    url = "/api/v1/crearplan";
+    $("#boton-enviar").text("Guardar");
+
+    $(formulario).trigger('reset');
+
+
+  }
+
+  function eliminarPlan(identificacion,boton){
+
+      Swal.fire({
+        title: "Estas seguro?",
+        text: "No podras revertir esto!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, eliminar"
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+
+          try {
+
+            const r = await fetch('/api/v1/eliminarplan/'+identificacion, {method:'DELETE'});
+            const respuesta = await r.json();
+
+            if(respuesta.ok){
+
+              Swal.fire({
+                title: "Eliminado!",
+                text: "El plan fue eliminado con exito.",
+                icon: "success"
+              });
+
+              $(boton).closest('tr').remove();
+
+            }else{
+              Swal.fire({
+                icon: "error",
+                title: "Error...",
+                text: "Intentalo mas tarde!"
+              });
+            } 
+
+
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Error...",
+              text: "Intentalo mas tarde!"
+            });
+          }
+          
+        
+        }
+      });
+
+  }
+
+  formulario.addEventListener('submit',async (e)=>{
+
+    e.preventDefault();
+    const {tieneErrores,datos} = validacion();
+
+    if(tieneErrores) return
+
+    datos.ejercicios = $(`[name="ejercicios"]`).val();
+    datos.ejercicios = datos.ejercicios.filter(r=>r!=="");
+
+
+    try {
+      const r = await fetch(url,{
+        method:'POST',
+        headers:{
+          'content-type':'application/json'
+        },
+        body:JSON.stringify(datos)
+      });
+
+      const datosDB = await r.json();
+      if(datosDB.ok){
+
+        Swal.fire({
+            title: "Exito!",
+            text: datosDB.datos,
+            icon: "success"
+        });
+
+        window.location.reload();
+      }else{
+        let errorDB = "";
+
+        if(Array.isArray(datosDB.errores)){
+          datosDB.errores.forEach(er=>{
+            errorDB+='<p> *'+er +'</p>';
+          })
+        }else{
+          errorDB = datosDB.datos ?? "No se logro completar la solicitud";
+        }
+
+        Swal.fire({
+          icon: "error",
+          title: "Error...",
+          html: errorDB
+        });
+      }
+    } catch (error) {
+
+      Swal.fire({
+        icon: "error",
+        title: "Error...",
+        text: 'Intentalo mas tarde'
+      });
+    }
+  })
+
+  function validacion(){
+    const datos = Object.fromEntries((new FormData(formulario)).entries());
+
+    let tieneErrores = false;
+
+    Object.keys(datos).forEach(campo=>{
+      const error = formulario.querySelector(`.error-${campo}`);
+      if(datos[campo] === "" || datos[campo] === null || datos[campo] === undefined){
+        if(error){
+          error.classList.add('tiene-error');
+        }
+        tieneErrores = true;
+      }else{
+
+        if(error){
+          error.classList.remove('tiene-error');
+        }
+      }
+    })
+
+    return {
+      tieneErrores,
+      datos
+    };
+  }
+
+  async function mostrarModalEditarPlan(identificacion,boton){
+
+    try {
+      const r = await fetch('/api/v1/obtenerplan/'+identificacion);
+      const datos = await r.json();
+
+      if(datos.ok && datos.datos){
+        
+        url = "/api/v1/actualizarplan/"+identificacion;
+
+        const {nombre,dificultad,objetivo,ejercicios,frecuencia} = datos.datos;
+
+        $(`[name="nombre"]`).val(nombre);
+        $(`[name="dificultad"]`).val(dificultad);
+        $(`[name="objetivo"]`).val(objetivo);
+        $(`[name="ejercicios"]`).val(ejercicios);
+        $(`[name="frecuencia"]`).val(frecuencia);
+        
+        $("#registrarModal").modal('show');
+        $("#boton-enviar").text("Editar");
+
+      }else{
+        Swal.fire({
+          icon: "error",
+          title: "Error...",
+          text: "No se logro obtener el plan!"
+        });
+      }
+      
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error...",
+        text: "No se logro obtener el plan!"
+      });
+    }
+
+  }
+
+
+</script>
+</body>
+</html>

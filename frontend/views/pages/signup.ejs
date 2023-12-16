@@ -1,0 +1,144 @@
+<%- include('../partials/head'); %>
+
+  <body>
+    <main>
+      <div class="h-screen bg-slate-50 flex justify-center items-center w-full">
+        <form action="signup" method="post" class="needs-validation" novalidate>
+          <div class="bg-white px-10 py-8 rounded-xl w-screen shadow-md max-w-lg">
+            <img class="h-14 mb-4 mx-auto" src="/static/dafit-logo.png" alt="logo">
+            <div class="space-y-4">
+
+              <% if(locals.errormensaje){ %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <strong>Error!</strong> <%=errormensaje%>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
+                </div>
+              <% } %>
+
+              <h1 class="text-center text-2xl font-semibold text-gray-600">Registro</h1>
+              <div class="row">
+                <div class="col-md-6">
+                  <div>
+                    <input type="text" for="rol" name="rol" id="rol" value="cliente" hidden />
+                    <label for="cedula" class="form-label block mb-1 text-gray-600 font-semibold">Cédula</label>
+                    <input type="number" class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="cedula"
+                      name="cedula" min="0" max="9999999999" required />
+                  </div>
+                  
+                </div>
+                <div class="col-md-6">
+                  <div>
+                    <label for="nombre" class="form-label block mb-1 text-gray-600 font-semibold">Nombre:</label>
+                    <input type="text" class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="nombre"
+                      name="nombre" required />
+    
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div>
+                    <label for="apellido" class="form-label block mb-1 text-gray-600 font-semibold">Apellido:</label>
+                    <input type="text" class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="apellido"
+                      name="apellido" required />
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div>
+                    <label for="fechadenacimiento" class="form-label block mb-1 text-gray-600 font-semibold">Fecha de
+                      Nacimiento:</label>
+                    <input type="date" class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="fechadenacimiento"
+                      name="fechadenacimiento" min="1920-04-01" max="2008-01-01" required />
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div>
+                    <label for="email" class="block mb-1 text-gray-600 font-semibold">Email: </label>
+                    <input type="email" class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="email"
+                      name="email" required />
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+ 
+                  <div>
+                    <label for="telefono" class="block mb-1 text-gray-600 font-semibold">Telefono:</label>
+                    <input type="number" class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="telefono"
+                      name="telefono" max="9999999999" min="1000000000" required />
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div>
+                    <label for="password" class="block mb-1 text-gray-600 font-semibold">Password:</label>
+                    <input type="password" class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="password"
+                      name="password" required />
+    
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div>
+                    <label for="confirmpw" class="block mb-1 text-gray-600 font-semibold">Confirmar Password:</label>
+                    <input type="password" class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="confirmpw"
+                      name="confirmpw" required />
+    
+                  </div>
+                </div>
+              </div>
+              
+             
+          
+            </div>
+            <button type="submit"
+              class="mt-4 w-full bg-blue-600 text-white font-semibold py-2 rounded-md  tracking-wide">Registrarse</button>
+          </div>
+        </form>
+
+      </div>
+    </main>
+    <%- include('../partials/footer'); %>
+  </body>
+  <script>
+    function comprobarClave() {
+      let password = document.f1.password.value
+      let confirmpw = document.f1.confirmpw.value
+
+      if (password == confirmpw) {
+        alert("Las dos claves son iguales.")
+      } else {
+        alert("Las dos claves son distintas.")
+      }
+    }
+  </script>
+  <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+      'use strict'
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll('.needs-validation')
+
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
+  </script>
+
+  </html>

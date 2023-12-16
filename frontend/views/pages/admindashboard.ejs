@@ -1,0 +1,231 @@
+<title>Admin Dashboard DA-FIT</title>
+<%- include('../partials/headdashboard'); %>
+  <section class="section-dash-user">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+
+            <div class="position-relative" style="width: 150px;display: block;margin: auto;">
+              <img src="<%= cliente.imgUser %>" alt="avatar" id="foto"
+              class="rounded-circle img-fluid imagen-usuario">
+              <div style="position: absolute;right: 0;bottom: 0;font-size: 18px;">
+                <label for="imagenperfil" class="fa-solid fa-pen" role="button" id="cambiarFotoPerfil"></label>
+                <input type="file" id="imagenperfil" style="display: none;" accept="image/*">
+              </div>
+            </div>
+            
+            <h5 class="my-3">Administrador</h5>
+            <p class="text-muted my-2">Admin <%= cliente.nombre %></p>
+            <div class="d-flex justify-content-center mb-2 mt-4">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarModal">Editar
+                perfil</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Nombre</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0"><%= cliente.nombre %></p>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Email</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0"><%= cliente.email %></p>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Telefono</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0"><%= cliente.telefono %></p>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Rol</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0"><%= cliente.rol %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ventana modal para editar -->
+  <div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarModalLabel">Editar perfil</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formulario-perfil" action="" method="post" class="needs-validation" novalidate>
+            <div class="">
+              <div class="space-y-4">
+
+                <div class="form-group">
+                  <label for="cedula">Cédula o Documento de identidad</label>
+                  <input type="number" class="form-control" id="cedula" name="cedula" value="<%= cliente.cedula %>" />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" class="form-control" id="nombre" name="nombre" value="<%= cliente.nombre %>"  />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="apellido">Apellido</label>
+                  <input type="text" class="form-control" id="apellido" name="apellido" value="<%= cliente.apellido %>"  />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="fechadenacimiento">Fecha de Nacimiento</label>
+                  <input type="date" class="form-control" id="fechadenacimiento" name="fechadenacimiento"
+                     min="1920-04-01" max="2008-01-01" value="<%= cliente.fechadenacimiento %>"/>
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="email">Email</label>
+                  <input type="email" class="form-control" id="email" name="email" value="<%= cliente.email %>" />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="telefono">Teléfono</label>
+                  <input type="number" class="form-control" id="telefono" name="telefono" value="<%= cliente.telefono %>" max="9999999999" min="1000000000" />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="password" name="password" value="<%= cliente.password %>"  />
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const formulario = document.getElementById('formulario-perfil');
+    const imagenPerfil = document.getElementById('imagenperfil');
+
+    imagenPerfil.addEventListener('change',async (e)=>{
+        const imagen = e.target.files[0];
+        try {
+          const formData = new FormData();
+          formData.append('image',imagen);
+          const r = await fetch('/api/v1/actualizarfotoperfil',{
+            method:'POST',
+            body:formData
+          });
+
+          const datosDB = await r.json();
+
+          if(datosDB.ok){
+
+            const srcimg = URL.createObjectURL(imagen);
+            $("#foto").attr('src',srcimg);
+
+            Swal.fire({
+                title: "Exito!",
+                text: datosDB.datos,
+                icon: "success"
+            });
+
+          }
+          else{
+            Swal.fire({
+              icon: "error",
+              title: "Error...",
+              text: datosDB.datos
+            });
+          }
+
+          
+          
+        } catch (error) {
+          Swal.fire({
+              icon: "error",
+              title: "Error...",
+              text: "No se logro actualizar la foto de perfil"
+            });
+        }
+        finally{
+          imagenPerfil.value = "";
+        }
+    })
+
+    formulario.addEventListener('submit',async (e)=>{
+
+      e.preventDefault();
+
+      const datos = Object.fromEntries((new FormData(formulario)).entries());
+      try {
+        const r = await fetch('/api/v1/actualizarperfiladmin',{
+          method:'POST',
+          headers:{
+            'content-type':'application/json'
+          },
+          body:JSON.stringify(datos)
+        })
+        const datosDB = await r.json();
+
+        if(datosDB.ok){
+
+          $("#editarModal").modal('hide');
+
+          Swal.fire({
+              title: "Exito!",
+              text: datosDB.datos,
+              icon: "success"
+          });
+
+          window.location.reload();
+
+        }else{
+          Swal.fire({
+            icon: "error",
+            title: "Error...",
+            text: datosDB.datos
+          });
+        }
+
+      } catch (error) {
+        console.log('Error actualizar perfil',error);
+        Swal.fire({
+          icon: "error",
+          title: "Error...",
+          text: "No se logro actualizar el perfil!"
+        });
+      }
+    })
+  </script>
+
+</body>
+</html> 
+  

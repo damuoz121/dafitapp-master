@@ -1,0 +1,62 @@
+<%- include('../partials/head'); %>
+<body>
+
+  <style>
+    .splide__slide img {
+      width: 100%;
+      object-fit: cover;
+      height: 300px;
+    }
+    .row .splide__arrow svg{
+      fill: #000;
+      height: 1.2em;
+      width: 1.2em;
+      background: white;
+      border-radius: 100%;
+      padding: 3px;
+    }
+  </style>
+
+  <main>
+      <h1 class="text-xl rounded font-big font-bold text-black text-center px-12 py-2 bg-slate-50">Planes</h1>
+      <div class="p-5 row">
+        <% listaplanes.forEach((plans) => { %>
+            <div class="col-12 col-sm-6 col-md-3 col-lg-4 p-2">
+              <div class="card">
+                <h2 class="text-center my-3 mb-0" style="font-size: 25px;font-weight: bolder;"><%=plans.nombre %></h2>
+                <span class="text-center d-block my-2 mb-2" style="font-size: 19px;"><%=plans.objetivo %></span>
+                <section id="div_<%=plans.id %>" class="splide carruseles" aria-label="Beautiful Images">
+                  <div class="splide__track">
+                    <ul class="splide__list">
+                      <% plans.ejercicios.forEach((plansimg) => { %>
+                        <li class="splide__slide">
+                          <img src="<%= plansimg.img %>" alt="">
+                        </li>
+                      <% }) %>
+                    </ul>
+                  </div>
+                </section>
+              </div>
+              
+            </div>
+        <% }) %>
+
+      </div>
+ 
+
+  </main>
+  <script>
+
+    document.addEventListener( 'DOMContentLoaded', function () {
+      const elementos = document.querySelectorAll('.carruseles');
+      [...elementos].forEach(elemento=>{
+        new Splide('#'+elemento.id).mount();
+      })
+      
+    } );
+  </script>
+
+  <%- include('../partials/footer'); %>
+  </body>
+  
+</html>

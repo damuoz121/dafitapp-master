@@ -1,0 +1,45 @@
+<%- include('../partials/head'); %>
+<body>
+
+  <main>
+    <div class="h-screen bg-slate-50 flex justify-center items-center w-full">
+        <form action="login" method="post">
+
+
+          <div class="bg-white px-10 py-8 rounded-xl w-screen shadow-md max-w-sm">
+            <img class="h-14 mb-4 mx-auto" src="/static/dafit-logo.png"  alt="logo">
+            <div class="space-y-4">
+              <% if(locals.errormensaje){ %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <strong>Error!</strong> <%=errormensaje%>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
+                </div>
+              <% } %>
+
+              <% if(locals.exitomensaje){ %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <strong>Ok!</strong> <%=exitomensaje%>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
+                </div>
+              <% } %>
+              
+
+              <h1 class="text-center text-2xl font-semibold text-gray-600">Iniciar sesión</h1>
+              <div>
+                <label for="email" class="block mb-1 text-gray-600 font-semibold">Email</label>
+                <input type="email" class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="email" name="email" required/>
+              </div>
+              <div>
+                <label for="password" class="block mb-1 text-gray-600 font-semibold">Contraseña</label>
+                <input type="password"class="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full" id="password" name="password" required />
+              </div>
+              <div>
+                <a href="recuperar" class=" hover:text-gray-500">¿Has olvidado tu contraseña?</a>
+              </div>
+            </div>
+            <button class="mt-4 w-full bg-blue-400 hover:bg-blue-600 text-white font-semibold py-2 rounded-md  tracking-wide" type="submit">Iniciar sesión</button>
+          </div>
+        </form>
+      </div>
+  </main>
+  <%- include('../partials/footer'); %>

@@ -1,0 +1,372 @@
+
+  <%- include('../partials/headuser'); %>
+      <style>
+        html,body{
+          height: 100%;
+        }
+        #ejercicios_wrapper{
+          background-color: rgb(253, 253, 253);
+          padding: 20px;
+          border-radius: 5px;
+        }
+      </style>
+      <title>Cliente</title>
+      <section class="section-dash-user" style="overflow-y: scroll;">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              
+              <div class="position-relative" style="width: 150px;display: block;margin: auto;">
+                <img src="<%= cliente.imgUser %>" alt="avatar" id="foto"
+                class="rounded-circle img-fluid imagen-usuario">
+                <div style="position: absolute;right: 0;bottom: 0;font-size: 18px;">
+                  <label for="imagenperfil" class="fa-solid fa-pen" role="button" id="cambiarFotoPerfil"></label>
+                  <input type="file" id="imagenperfil" style="display: none;" accept="image/*">
+                </div>
+              </div>
+
+              <h5 class="my-3"><%= cliente.nombre %></h5>
+
+              <div class="d-flex justify-content-center mb-2">
+                <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editarModal">Editar</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Nombres y apellidos</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0"><%= cliente.nombre %> <%= cliente.apellido %></p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Email</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0"><%= cliente.email %></p>
+                </div>
+              </div>
+    
+            </div>
+          </div>
+
+          <div>
+            <div class="d-flex">
+              <div class="flex-grow-1">
+                <div class="form-group">
+                  <label for="plan">Plan</label>
+                  <select class="form-select" name="plan" id="plan">
+                    
+                    <option value="null">Ningun plan</option>
+                    <% if(planes.length > 0){ %>
+                      <% planes.forEach(function(plan) { %>
+              
+                        <% if (plan.id == cliente.planActivo) { %>
+                          <option selected value="<%=plan.id%>"><%=plan.nombre%></option>
+                        <% } else { %>
+                            <option value="<%=plan.id%>"><%=plan.nombre%></option>
+                        <% } %>
+              
+                        
+                      <% }); %>
+                    <% } else{ %>  
+                        
+                    <% } %>
+                    
+                  </select>
+                </div>
+              </div>
+              <div class="align-self-end flex-shrink-0 ms-3">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="aceptarPlan()">Seleccionar plan</button>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <div class="resultados-tabla p-3">
+        <h4 class="my-4 text-center text-muted">Lista de ejercicios asociados</h4>
+        <table id="ejercicios" class="display" style="width:100%">
+            <thead class="thead-dark">
+                <tr>
+                  <th>Nombre</th>
+                  <th>Descripcion</th>
+                  <th>Dificultad</th>
+                  <th>Musculo principal</th>
+                  
+                </tr>
+            </thead>
+            <tbody>
+              
+              <% if(ejercicios.length > 0){ %>
+                <% ejercicios.forEach(function(ejercicio) { %>
+        
+                 <tr>
+                  <td><%=ejercicio.nombre%></td>
+                  <td><%=ejercicio.descripcion%></td>
+                  <td><%=ejercicio.dificultad%></td>
+                  <td><%=ejercicio.musculo_principal%></td>
+                 </tr>
+        
+                  
+                <% })%>
+              <% }%>
+                
+            </tbody>
+        </table>
+      </div>
+
+  </section>
+
+
+
+
+  <!-- Ventana modal para editar -->
+  <div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarModalLabel">Editar perfil</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formulario-perfil" action="" method="post" class="needs-validation" novalidate>
+            <div class="">
+              <div class="space-y-4">
+
+                <div class="form-group">
+                  <label for="cedula">Cédula o Documento de identidad</label>
+                  <input type="number" class="form-control" id="cedula" name="cedula" value="<%= cliente.cedula %>" />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" class="form-control" id="nombre" name="nombre" value="<%= cliente.nombre %>"  />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="apellido">Apellido</label>
+                  <input type="text" class="form-control" id="apellido" name="apellido" value="<%= cliente.apellido %>"  />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="fechadenacimiento">Fecha de Nacimiento</label>
+                  <input type="date" class="form-control" id="fechadenacimiento" name="fechadenacimiento" 
+                     min="1920-04-01" max="2008-01-01"  value="<%= cliente.fechadenacimiento %>"/>
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="email">Email</label>
+                  <input type="email" class="form-control" id="email" name="email" value="<%= cliente.email %>" />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="telefono">Telefono</label>
+                  <input type="number" class="form-control" id="telefono" name="telefono" value="<%= cliente.telefono %>" max="9999999999" min="1000000000" />
+                </div>
+
+                <div class="form-group mt-3">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="password" name="password" value="<%= cliente.password %>"  />
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+</html>   
+  <script>
+    
+    const tablaEjercicios = $('#ejercicios').DataTable({pageLength : 7});
+
+    const formulario = document.getElementById('formulario-perfil');
+    const imagenPerfil = document.getElementById('imagenperfil');
+
+    imagenPerfil.addEventListener('change',async (e)=>{
+        const imagen = e.target.files[0];
+        try {
+          const formData = new FormData();
+          formData.append('image',imagen);
+          
+          const r = await fetch('/api/v1/actualizarfotoperfil',{
+            method:'POST',
+            body:formData,
+          });
+
+          const datosDB = await r.json();
+
+          if(datosDB.ok){
+
+            const srcimg = URL.createObjectURL(imagen);
+            $("#foto").attr('src',srcimg);
+
+            Swal.fire({
+                title: "Exito!",
+                text: datosDB.datos,
+                icon: "success"
+            });
+
+          }
+          else{
+            Swal.fire({
+              icon: "error",
+              title: "Error...",
+              text: datosDB.datos
+            });
+          }
+
+          
+          
+        } catch (error) {
+          Swal.fire({
+              icon: "error",
+              title: "Error...",
+              text: "No se logro actualizar la foto de perfil"
+            });
+        }
+        finally{
+          imagenPerfil.value = "";
+        }
+    })
+
+
+    formulario.addEventListener('submit',async (e)=>{
+
+      e.preventDefault();
+
+      const datos = Object.fromEntries((new FormData(formulario)).entries());
+      try {
+        const r = await fetch('/api/v1/actualizarperfilcliente',{
+          method:'POST',
+          headers:{
+            'content-type':'application/json'
+          },
+          body:JSON.stringify(datos)
+        })
+        const datosDB = await r.json();
+
+        if(datosDB.ok){
+
+          $("#editarModal").modal('hide');
+
+          Swal.fire({
+              title: "Exito!",
+              text: datosDB.datos,
+              icon: "success"
+          });
+
+          window.location.reload();
+
+        }else{
+          Swal.fire({
+            icon: "error",
+            title: "Error...",
+            text: datosDB.datos
+          });
+        }
+
+      } catch (error) {
+        console.log('Error actualizar perfil',error);
+        Swal.fire({
+          icon: "error",
+          title: "Error...",
+          text: "No se logro actualizar el perfil!"
+        });
+      }
+    })
+
+    const selectPlan = document.querySelector('#plan');
+
+    selectPlan.addEventListener('change',async (e)=>{
+      //obtener los ejercicios cuando selecciono un plan para que se liste en la tabla
+      try {
+        tablaEjercicios.clear().draw();
+
+        const r = await fetch('/api/v1/obtenerejerciciosdeplan/'+e.target.value);
+        const datosDB = await r.json();
+        if(datosDB.ok && Array.isArray(datosDB.datos)){
+          const filas = datosDB.datos.map(({nombre,descripcion,dificultad,musculo_principal})=>([nombre,descripcion,dificultad,musculo_principal]))
+          tablaEjercicios.rows.add( filas ).draw();
+
+        }else{
+
+          Swal.fire({
+            icon: "error",
+            title: "Error...",
+            text: "No se pudo obtener los ejercicios!"
+          });
+        }
+
+
+      } catch (error) {
+
+          Swal.fire({
+            icon: "error",
+            title: "Error...",
+            text: "No se pudo obtener los ejercicios!"
+          });
+      }
+    })
+
+    async function aceptarPlan(){
+
+      const plan = $(selectPlan).val();
+
+      try {
+        const r = await fetch('/api/v1/cambiarplan',{
+          method:'POST',
+          headers:{
+            'content-type':'application/json'
+          },
+          body:JSON.stringify({plan})
+        });
+        const respuesta = await r.json();
+
+        if(respuesta.ok){
+            
+            Swal.fire({
+              title: "Exito!",
+              text: respuesta.datos,
+              icon: "success"
+            });
+
+        }else{
+
+            Swal.fire({
+              icon: "error",
+              title: "Error...",
+              text: respuesta.datos
+            });
+        } 
+
+      } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Error...",
+            text: "No se pudo cambiar el plan!"
+          });
+      }
+    }
+  </script>
